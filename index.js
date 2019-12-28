@@ -4,6 +4,8 @@ const figlet = require('figlet')
 const inquirer  = require('./lib/inquirer')
 const files  = require('./lib/files')
 const imageProcessor  = require('./lib/imageProcessor')
+const { imageHash } = require('image-hash')
+
 
 clear()
 
@@ -12,32 +14,63 @@ console.log(
     figlet.textSync('Hello!', { horizontalLayout: 'full' })
   )
 )
+
 const run = async () => {
     const userReply = await inquirer.askTargetDirectory()
 
     if (files.directoryExists(userReply.targetDir)) {
         console.log(chalk.green('Directory found!'))
-        const duplicates = imageProcessor.findDuplicates(userReply.targetDir)
-        console.log("duplicates")
-        console.log(duplicates)
+        
+        const imageList = files.getAllFiles(userReply.targetDir)
+        const hashedImageList = []
+        imageList.forEach(imgFile => {
+          imageHash(imgFile, 16, true, (error, data) => {
+              if (error) throw error
+              hashedImageList.push({
+                  "imgPath": imgFile,
+                  "hashVal": data
+              })
+              if ( hashedImageList.length == imageList.length ) {
+                // console.log( "hashedImageList : " )
+                // console.log( hashedImageList )
 
-        // let duplicatesList = duplicates.slice().sort();
-        // let results = [];
-        // for (let i = 0; i < duplicatesList.length - 1; i++) {
-        // if (duplicatesList[i + 1] == duplicatesList[i]) {
-        //     results.push(duplicatesList[i]);
-        // }
-        // }
+                function compare( a, b ) {
+                  if ( a.hashVal < b.hashVal ){
+                    return -1;
+                  }
+                  if ( a.hashVal > b.hashVal ){
+                    return 1;
+                  }
+                  return 0;
+                }
+                
+                hashedImageList.sort( compare );
 
-        // if ( results.length > 0 ) {
-        //     console.log(chalk.green("We've found some duplicates listed below:"))
-        //     results.forEach( ( duplicateItem ) => {
-        //         console.log(duplicateItem.imgPath)
-        //     })
-        //     console.log(chalk.green("We've found some duplicates listed below:"))
-        // } else {
-        //     console.log(chalk.yellow('No duplicates found!'))
-        // }
+                let results  = [];
+                for (let i = 0; i < hashedImageList.length - 1; i++) {
+                  if (hashedImageList[i + 1].hashVal == hashedImageList[i].hashVal ) {
+                      results.push(hashedImageList[i]);
+                  }
+                } 
+                // console.log( "results : " )
+                // console.log( results )
+      
+                if ( results.length > 0 ) {
+                    console.log(chalk.green("We've found some duplicates listed below:"))
+                    results.forEach( ( duplicateItem ) => {
+                        console.log(duplicateItem.imgPath)
+                    })
+                } else {
+                    console.log(chalk.yellow('No duplicates found!'))
+                }
+              }
+
+             
+              
+          })
+        });
+console.log("done")
+        
     }
     // else {
     //     console.log(chalk.red('Directory not found!'))
