@@ -15,7 +15,7 @@ const run = async () => {
 
     if (files.directoryExists(userReply.targetDir)) {
         console.log(chalk.green('Directory found!'))
-        
+
         const imageList = files.getAllFiles(userReply.targetDir)
         imageProcessor.getHashedVals( imageList )
     }

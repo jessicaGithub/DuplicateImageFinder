@@ -5,22 +5,28 @@ jest.mock('inquirer');
 
 describe('Module test null', () => {
   test('user input', async () => {
-    expect.assertions(1);
     inquirer.prompt = jest.fn().mockResolvedValue({ targetDir: '' });
 
-    await expect(inquirerLib.askTargetDirectory()).resolves.toEqual({ targetDir: '' });
+    let answer = await inquirerLib.askTargetDirectory()
+    expect(inquirerLib.validateDir(answer.targetDir)).toEqual('Please enter a valid path.');
   });
 });
 
+describe('Module test correct directory', () => {
+  test('user input', async () => {
+    inquirer.prompt = jest.fn().mockResolvedValue({ targetDir: './Code Test' });
 
-// test('Null value should not be allowed', () => {
-//     expect(inquirer.askTargetDirectory("")).toBe("Please enter a valid path.");
-// });
+    let answer = await inquirerLib.askTargetDirectory()
+    expect(inquirerLib.validateDir(answer.targetDir)).toEqual(true);
+  });
+});
 
-// test('Should be able to find cats directory', () => {
-//     expect(inquirer.askTargetDirectory("./cats")).toBe(true);
-// });
+describe('Module test non existent directory', () => {
+  test('user input', async () => {
+    inquirer.prompt = jest.fn().mockResolvedValue({ targetDir: './Code Test 2' });
 
-// test('Should not be able to find frog directory', () => {
-//     expect(inquirer.askTargetDirectory("./frog")).toBe(false);
-// });
+    let answer = await inquirerLib.askTargetDirectory()
+    expect(inquirerLib.validateDir(answer.targetDir)).toEqual(true);
+    // still returns true as this validates the null value only
+  });
+});
