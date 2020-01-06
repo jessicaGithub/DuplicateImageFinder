@@ -1,0 +1,36 @@
+{
+  "name": "DuplicateImageFinder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessicaGithub/DuplicateImageFinder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jessicaGithub/DuplicateImageFinder/issues"
+  },
+  "homepage": "https://github.com/jessicaGithub/DuplicateImageFinder#readme",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "clear": "^0.1.0",
+    "cli-progress": "^3.4.0",
+    "clui": "^0.3.6",
+    "configstore": "^5.0.0",
+    "image-hash": "^3.5.1",
+    "inquirer": "^7.0.1",
+    "lodash": "^4.17.15",
+    "minimist": "^1.2.0",
+    "touch": "^3.1.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
+}
